@@ -80,13 +80,13 @@
     }
 
     if (shipping == 'False' && user != 'AnonymousUser'){
-        document.getElementById('form-wrapper').classList.add('hidden');
-        document.getElementById('payment-info').classList.remove('hidden');
+        document.getElementById('form-wrapper').classList.add("hidden");
+        document.getElementById('payment-info').classList.remove("hidden");
     }
 
     var form = document.getElementById('form')
 
-    csrf_token = form.getElementsByTagName("input")[0].value
+    csrftoken = form.getElementsByTagName("input")[0].value
     console.log('New token:', form.getElementsByTagName("input")[0].value)
 
     form.addEventListener('submit', function(e){
@@ -135,15 +135,19 @@
             method:'POST',
             headers:{
                 'Content-Type': 'application/json',
-                'X-CSRFToken': csrf_token,
+                'X-CSRFToken': csrftoken,
             },
-            body:JSON.stringify({'form': userFormData, 'shipping': shippingInfo}),
+            body:JSON.stringify({'form': userFormData, 'shipping': shippingInfo})
         })
         .then((response) => response.json())
         .then((data) => {
             console.log('Success:', data);
             alert('Transaction completed');
             window.location.href = "{% url 'shop' %}"
+
+            cart = {}
+            document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path/"
+                window.location.href = "{% url 'shop' %}"
         })
     }
 </script>

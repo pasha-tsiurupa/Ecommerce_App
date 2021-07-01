@@ -11,24 +11,48 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
 
     <script type="text/javascript">
-        var user = "{{ request.user }}"
+        var user = '{{ request.user }}'
 
         function getToken(name) {
-        let cookieValue = null;
+        var cookieValue = null;
         if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
                 }
             }
+            return cookieValue;
         }
-        return cookieValue;
-}
-const csrftoken = getToken('csrftoken');
+
+        var csrftoken = getToken('csrftoken')
+
+
+
+
+        function getCookie(name) {
+            var cookieArr = document.cookie.split(";");
+
+            for(var i = 0; i < cookieArr.length; i++) {
+                var cookiePair = cookieArr[i].split("=");
+
+                if(name == cookiePair[0].trim()) {
+                    return decodeURIComponent(cookiePair[1]);
+                }
+            }
+            return null;
+        }
+
+        var cart = JSON.parse(getCookie('cart'))
+        if (cart == undefined){
+            cart = {}
+            console.log('Cart was created!', cart)
+            document.cookie = 'cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        }
+        console.log('Cart:', cart)
     </script>
 </head>
 <body>
@@ -70,10 +94,7 @@ const csrftoken = getToken('csrftoken');
         crossorigin="anonymous"></script>
 
 <script type="text/javascript" src="{% static 'js/cart.js' %}">
-    var user = '{{ request.user }}'
 
-
-    
 </script>
 
 </body>
